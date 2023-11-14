@@ -34,7 +34,27 @@ class change131worksheet():
         self.thesheet.update_cell(self.rowOfQuestion, self.choiceOfCol, self.triggerbox)
         
 
-ss = change131worksheet(eyepod_spreadsheet.worksheet("Session 3 - Blue + Orange"))
-ss.changecheckbox(1, "Yes")
+# create multiple sheets for every 131 instance 
+sessionNumber = input("What session number is this? - ")
+colorOfInstances = input("Provide the base + iris color of the instances seperated in commas - ").split(", ")
+amountOfInstances = len(colorOfInstances)
+
+for entity in colorOfInstances:
+    initialize131Worksheet(sessionNumber, entity).createsheet()
+    print(f"Successfully created a worksheet for {entity} under Session {sessionNumber}.")
+
+reference = list(enumerate(colorOfInstances))
+print(f"For reference, please utilize integers to refer to specific 131 instances as given by the enumerated sheet. \n {reference}")
+
+# 16 questions
+for x in range(16):
+    print(f"Question {x}")
+    
+
+
+
+
+#ss = change131worksheet(eyepod_spreadsheet.worksheet("Session 3 - Blue + Orange"))
+#ss.changecheckbox(2, "idk", False)
         
 print("tada!!!")
