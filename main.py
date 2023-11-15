@@ -2,19 +2,13 @@ import gspread
 import time
 
 serviceAccount = gspread.service_account("/workspace/Pythonifying-Google-Sheets/gspread/service_account.json")
-
 eyepod_spreadsheet = serviceAccount.open("Personality questions for SCP-131 test [VICERABBIT]")
-
 formatWorksheet = eyepod_spreadsheet.worksheet("Format")
-
-
 
 def clearrow(sheet, row): # a quick function to clear all checkboxes in altering choices
     sheet.update_cell(row, 2, False)
     sheet.update_cell(row, 3, False)
     sheet.update_cell(row, 4, False)
-
-
 
 class initialize131Worksheet():
     def __init__(self, session, colorOfEyepod):
@@ -46,7 +40,7 @@ def apiexaust(obj, questionnumber, booleo): # a quick function for API fallbacks
 
 def changeRResponses(boolinstances, sessionnumber, instcolorlists, questionnum, boolchoice): # neatly change large reqs
     for instance in boolinstances:
-        if instance == "None":
+        if instance == "None": # skip looping if no instances
             break
         theobj = change131worksheet(eyepod_spreadsheet.worksheet(f"Session {sessionnumber} - {instcolorlists[int(instance)]}"))
         try:
@@ -66,7 +60,7 @@ print(f"For reference, please utilize integers to refer to specific 131 instance
 
 # 16 questions
 for x in range(1, 17):
-    print(f"Question {x} - {formatWorksheet.cell(x+1, 1)} \n Ensure you respond with the enumerated integers & seperated in commas; if no instances, reply with None.")
+    print(f"Question {x} - {formatWorksheet.cell(x+1, 1).value} \n Ensure you respond with the enumerated integers & seperated in commas; if no instances, reply with None.")
     yesinstances = input("Provide the instances that said yes - ").split(", ")
     noinstances = input("Provide the instances that said no - ").split(", ")
     idkinstances = input("Provide the instances that said idk - ").split(", ")
@@ -76,7 +70,4 @@ for x in range(1, 17):
     changeRResponses(idkinstances, sessionNumber, colorOfInstances, x, "idk") # for idk responses
 
 
-#ss = change131worksheet(eyepod_spreadsheet.worksheet("Session 3 - Blue + Orange"))
-#ss.changecheckbox(2, "idk", False)
-        
-print("tada!!!")
+print("Program has concluded without any errors.")
