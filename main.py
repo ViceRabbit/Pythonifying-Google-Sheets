@@ -40,7 +40,7 @@ def apiexaust(obj, questionnumber, booleo): # a quick function for API fallbacks
 
 def changeRResponses(boolinstances, sessionnumber, instcolorlists, questionnum, boolchoice): # neatly change large reqs
     for instance in boolinstances:
-        if instance.replace(" ","") == "None": # skip looping if no instances
+        if not instance.isnumeric(): # skip looping if no instances
             break
         theobj = change131worksheet(eyepod_spreadsheet.worksheet(f"Session {sessionnumber} - {instcolorlists[int(instance)]}"))
         try:
@@ -48,28 +48,37 @@ def changeRResponses(boolinstances, sessionnumber, instcolorlists, questionnum, 
         except:
             apiexaust(theobj, questionnum, boolchoice)
 
+def deleteRSheet(sessionnumber, instcolorlists): # incase one messes up; deletes all progress for restarting or testing
+    for instance in instcolorlists:
+        theobj = eyepod_spreadsheet.del_worksheet(eyepod_spreadsheet.worksheet(f"Session {sessionnumber} - {instance}"))
+
 # create multiple sheets for every 131 instance 
 sessionNumber = input("What session number is this? - ")
 colorOfInstances = input("Provide the base + iris color of the instances seperated in commas - ").split(", ")
 reference = list(enumerate(colorOfInstances))
 
-
 for entity in colorOfInstances:
     initialize131Worksheet(sessionNumber, entity).createsheet()
     print(f"Successfully created a worksheet for {entity} under Session {sessionNumber}.")
 
-print(f"For reference, please utilize integers to refer to specific 131 instances as given by the enumerated sheet. \n {reference}")
+print(f"For reference, please utilize integers to refer to specific 131 instances as given by the enumerated sheet. \n Additionally, state 'RETRY' to redo current question and 'DELETE' to reset entire progress.")
 
 # 16 questions
 for x in range(1, 17):
     print(f"Question {x} - {formatWorksheet.cell(x+1, 1).value} \n {reference}")
-    yesinstances = input("Provide the instances that said yes - ").split(", ")
-    noinstances = input("Provide the instances that said no - ").split(", ")
-    idkinstances = input("Provide the instances that said idk - ").split(", ")
-
+    while True:
+        yesinstances = input("Provide the instances that said yes - ").split(", ")
+        noinstances = input("Provide the instances that said no - ").split(", ")
+        idkinstances = input("Provide the instances that said idk - ").split(", ")
+        if "DELETE" in yesinstances or "DELETE" in noinstances or "DELETE" in idkinstances:
+            print("MARKED FOR DELETION; DELETING SPREADSHEETS")
+            deleteRSheet(sessionNumber, colorOfInstances)
+            raise Exception("Successfully deleted all sheets; program stopped.") # terminate
+        if not "RETRY" in yesinstances and not "RETRY" in noinstances and not "RETRY" in idkinstances:
+            break
+        print("DETECTED RETRY IN MESSAGES; WHILE LOOP UNBROKEN.") # 11/15 - add a way to simply to retry answers if didnt go on plan
     changeRResponses(yesinstances, sessionNumber, colorOfInstances, x, "Yes") # for yes responses
     changeRResponses(noinstances, sessionNumber, colorOfInstances, x, "No") # for no responses
     changeRResponses(idkinstances, sessionNumber, colorOfInstances, x, "idk") # for idk responses
-
 
 print("Program has concluded without any errors.")
