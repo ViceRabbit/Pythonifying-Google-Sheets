@@ -40,7 +40,7 @@ def apiexaust(obj, questionnumber, booleo): # a quick function for API fallbacks
 
 def changeRResponses(boolinstances, sessionnumber, instcolorlists, questionnum, boolchoice): # neatly change large reqs
     for instance in boolinstances:
-        if instance == "None": # skip looping if no instances
+        if instance.replace(" ","") == "None": # skip looping if no instances
             break
         theobj = change131worksheet(eyepod_spreadsheet.worksheet(f"Session {sessionnumber} - {instcolorlists[int(instance)]}"))
         try:
@@ -51,16 +51,18 @@ def changeRResponses(boolinstances, sessionnumber, instcolorlists, questionnum, 
 # create multiple sheets for every 131 instance 
 sessionNumber = input("What session number is this? - ")
 colorOfInstances = input("Provide the base + iris color of the instances seperated in commas - ").split(", ")
+reference = list(enumerate(colorOfInstances))
+
 
 for entity in colorOfInstances:
     initialize131Worksheet(sessionNumber, entity).createsheet()
     print(f"Successfully created a worksheet for {entity} under Session {sessionNumber}.")
 
-print(f"For reference, please utilize integers to refer to specific 131 instances as given by the enumerated sheet. \n {list(enumerate(colorOfInstances))}")
+print(f"For reference, please utilize integers to refer to specific 131 instances as given by the enumerated sheet. \n {reference}")
 
 # 16 questions
 for x in range(1, 17):
-    print(f"Question {x} - {formatWorksheet.cell(x+1, 1).value} \n Ensure you respond with the enumerated integers & seperated in commas; if no instances, reply with None.")
+    print(f"Question {x} - {formatWorksheet.cell(x+1, 1).value} \n {reference}")
     yesinstances = input("Provide the instances that said yes - ").split(", ")
     noinstances = input("Provide the instances that said no - ").split(", ")
     idkinstances = input("Provide the instances that said idk - ").split(", ")
